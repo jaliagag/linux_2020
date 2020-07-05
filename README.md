@@ -1,2 +1,3 @@
-# linux_2020
-running CentOS versions
+# Linux 2020
+
+1. [Setting up CentOS on local machine](settingup.md)
