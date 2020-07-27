@@ -12,7 +12,7 @@ cat /etc/redhat-release
 rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 # set static ip addr
-vi /etc/sysconfig/network-scripts/ifcofg-<networkAdapterName>
+vi /etc/sysconfig/network-scripts/ifcfg-<networkAdapterName>
 
 # set values as
 BOOTPROTO="static"
@@ -27,7 +27,7 @@ DNS2="8.8.4.4"
 service network restart
 
 # install net-tools
-yum install net-tools
+yum install -y net-tools
 
 # we can now use ifconig
 # check host name
@@ -38,13 +38,13 @@ hostname
 vi /etc/hostname
 
 # update all
-yum -y update
+yum update -y
 
 # command line web process links
-yum -y install links
+yum install -y links
 
 # install apache webserver
-yum -y install httpd
+yum install -y httpd
 
 # allow HTTP service through the firewall
 firewall-cmd --add-service=http
@@ -83,20 +83,20 @@ vi /etc/ssh/ssh_config
 Protocol 2
 
 # Installing GCC - GNU Compiler Collection
-yum -y install gcc
+yum install -y gcc
 
 gcc --version
 
 # Install Java
-yum -y install java
+yum install -y java
 
 java -version
 
 # install wget
-yum -y install wget
+yum install -y wget
 
 # install telnet
-yum -y install telnet
+yum install -y telnet
 
 # Install epel repository
 wget https://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
@@ -106,10 +106,10 @@ rpm -ivh epel-release-6-8.noarch.rpm
 yum -y install p7zip
 
 # to access NTFS and windows file servers
-yum -y install ntfs-3g
+yum install -y ntfs-3g
 
 # vsftp server - secure file transfer
-yum -y install vsftpd
+yum install -y vsftpd
 
 # edit config file
 vi /etc/vsftpd/vsftpd.conf
@@ -120,7 +120,7 @@ local_enable=YES
 chroot_local_users=YES
 
 # allow services through the firewall
-firewal-cmd --add-prot=21/tcp
+firewall-cmd --add-prot=21/tcp
 firewall-cmd --reload
 systemctl restart vsftpd
 systemctl enable vsftpd
@@ -189,3 +189,50 @@ ln -s ../sites-available/jose.copado.com .
 nginx -s reload
 
 ```
+
+```bash
+# Connecting to the internet:
+nmcli d
+nmuti
+
+# ver los usuarios
+w 
+# fecha actual
+date
+# calendario
+cal
+ # cambiar la contraseña del usuario
+passwd
+#Cambio de hora en servidores
+hwclock–set –date=”2013/06/13 16:02:15″
+# Ver log de errores del sistema
+dmesg
+# Para ubicar la version del sistema operativo en linux:
+lsb_release –a
+# Muestra los datos del Kernell:
+uname – a 
+#Muestra los datos de las aplicaciones instaladas:
+rpm -qa | grep (nombre de la aplicación)
+# Para revisar version de  Linux:
+cat /etc/issue
+# Revisar versión del sistema operativo Linux
+more /proc/version
+# Ver capacidad de File Systems en servidores en GB
+df -h 
+# Montar un pen drive como partición
+mount /dev/sdb1 /mnt/stickusb
+# Ubicar los archivos
+find / -name + NOMBREDELARCHIVO
+
+# /etc/fstab información de nuestros FS, punto de montura, tipo de FS se agrega ahí
+# ampliar
+# volume group display
+vgdisplay
+# Free PE size, espacio libre que podemos usar par asignar a otros volúmenes
+# info de cada uno del los FS
+lgdisplay
+# extender el logical volume
+lvextend -L+1G /dev/root-vg/tmp1
+resize2fs /dev/root-vg/tmp1
+```
+
