@@ -21,3 +21,7 @@ Corrí este comando para agregar mi identidad:
 $ ssh-add ~/.ssh/id_rsa
 
 ```
+
+Capítulo 2:
+
+Generé un token de desarrollador nuevo en github. Lo guardé en la máquina ubuntu y lo pasé como contraseña a la hora de hacer el push.
