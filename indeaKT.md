@@ -1,6 +1,7 @@
 # India Unix KT
 
 [Session 1](https://web.microsoftstream.com/video/24f2f96d-b577-4143-8237-9f45771612c3)
+[Session 1.5](https://web.microsoftstream.com/video/7a197d4e-ee38-436b-87f1-277332fe20fd)
 
 Access to SNOW:
 
@@ -54,7 +55,33 @@ There is no review for standard changes. Schedule: from 7AM to 5PM CST for non-p
 2. Assignment group
 3. Category
 4. CI name
+   1. add more CIs under Affected CIs at the bottom of the page, in case more than one server is being affected.
 5. Urgency 2
 6. Priority 3
-7. Short description
+7. Short description - include SR numbers, something like SRQ2
 8. Description: detailed description
+9. Planning
+   1. Justification - business justification. Format: `<Emp ID> <email_address@aa.com>`, for example: "AA Requester Employee ID:  @@00259824@@ AA Requester Email:SUNIL.SYAMALA@aa.com".
+   2. Include Change, Implementation Backout and test plans (test plan 'tested as part of standard environment quarterly patching on stage and dev environments.', on which servers was it test _if it was tested_)
+10. Got To Risk Assessment > Fill Out Risk Assessment. It depends on what is the change.
+11. Hit Request Review at the top - it will trigger the review phase.
+12. You can review the change again; make sure everything is ok
+13. Hit Request Approval - it will trigger the approval phase - you wil _NOT_ be able to make modifications after the change goes to AA, to the reviewers, so make sure it's all complete.
+    1. Technical Team: unix team
+    2. App owners: approves on the AA side, using Cherwell
+    3. CAB: change management team
+15. Once all teams approve the change, we can start the change, at the scheduled time; when we do so, we have to _change the status to **in progress**_.
+16. Once the change is complete, we have to
+    1. Fill closure code and actual end time
+    2. Fill the 3 tasks assigned to you (at the bottom, tab "Change tasks"):
+       1. did you do the post-implementation plan?
+       2. did you do the implementation plan?
+       3. did you do the pre-implementation plan?
+    3. Hit save
+17. Close the change (tasks need to be marked as completed)
+
+### Creating an Emergency Change
+
+1. Attach approval email as attachment
+2. Same fields as normal change
+3. You can select any date that allows you to select
