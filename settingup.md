@@ -14,6 +14,7 @@ rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 # set static ip addr
 vi /etc/sysconfig/network-scripts/ifcfg-<networkAdapterName>
 
+# https://www.itzgeek.com/how-tos/linux/centos-how-tos/how-to-configure-static-ip-address-in-centos-7-rhel-7-fedora-26.html
 # set values as
 BOOTPROTO="static"
 ONBOOT="yes"
