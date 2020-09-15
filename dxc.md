@@ -766,7 +766,22 @@ tr --> changes a character
 ### Copying files over the network
 
 - SCP - Secure copy: `scp source destination` , copy source destination. SCP you need to know the files you want to copy before issuing the command.
+
+```bash
+scp file targetHost:PATH
+
+# transfer as another user
+
+scp file username@hostname:PATH
+
+```
+
 - SFTP - SSH file transfer protocol: `sftp host` : start a secure file transfer session with host. A more interactive experience where you can examine local files and remote
+
+```bash
+sftp file targetHost:PATH
+```
+
 - `ftp host`: start a file transfer session with host. Not secure, credentials are sent over the network in plain text. 
 - WinSCP --> windows only file transfer client
 
