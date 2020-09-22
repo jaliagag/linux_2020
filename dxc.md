@@ -350,7 +350,7 @@ Man pages
 - go to bottom: G
 - quit: q
 
-Environmental variables store informacion; ypically uppercase.
+Environmental variables store informacion; yypically uppercase.
 
 PATH: it's an environment variable, controls the command search path and contains a list of directories that are separated by a comma. When you type a command at the prompt and press enter, that command is searched for in the directories that are listed in the PATH environment variable.
 
@@ -751,7 +751,7 @@ By default standard input comes from the keyboard; standard output and standard 
     +   `-n` precede output with line numbers
     +   `-v` invert match; print lines that don't match
 
-file file_name --< display the file type;
+file file_name --> display the file type;
 
 Searching for text in binary files: grep is not useful. We have to use the `strings` command.
 
