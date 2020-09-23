@@ -26,11 +26,6 @@ UXMONBROKER
 +++++++++++++++++++++++++++++++++++++++++++
 ```
 
-## TAR
-
-- tar -zcvf <newFileName> <fileToCompress>
-- tar -zxvf <file2Decompress>
-
 ## NTP en un server de ORACLE NO SE TOCA
 
 ## NTP alerts
@@ -65,3 +60,12 @@ UXMONBROKER
   - Opcagt -status
   - Opcagt -restart
   - Opcagt -cleanstart
+
+## FS 
+
+- du -sh <directory>
+
+### TAR
+
+- tar -zcvf <newFileName> <fileToCompress>
+- tar -zxvf <file2Decompress>
