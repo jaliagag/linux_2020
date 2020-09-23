@@ -61,7 +61,7 @@ UXMONBROKER
   - Opcagt -restart
   - Opcagt -cleanstart
 
-## FS 
+## FS
 
 - du -sh <directory>
 
@@ -69,3 +69,12 @@ UXMONBROKER
 
 - tar -zcvf <newFileName> <fileToCompress>
 - tar -zxvf <file2Decompress>
+
+## FAIL PATH VAR/LOG/MESSAGES
+
+cat /var/log/messages # check messages containing errors
+
+## UXMON: The number of Open LV and Current LV is different for VG: VolGroup00.
+
+lvs
+lvdisplay VolGroup00
