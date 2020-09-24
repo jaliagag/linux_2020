@@ -38,7 +38,7 @@ UXMONBROKER
 
 ## Too many instances
 
-- ps -ef | grep http | wc -l
+- ps -ef | grep java  | wc -l
 - Ps_mon.cfg
 - Http
 - Htttd 1-10
@@ -72,9 +72,15 @@ UXMONBROKER
 
 ## FAIL PATH VAR/LOG/MESSAGES
 
-cat /var/log/messages # check messages containing errors
+- check /var/log/messages on and around the timeframe of the alert - see the actual error
+  - cat /var/log/messages # check messages containing errors
 
-## UXMON: The number of Open LV and Current LV is different for VG: VolGroup00.
+## UXMON: The number of Open LV and Current LV is different for VG: VolGroup00
 
 lvs
 lvdisplay VolGroup00
+
+## find vol_mon
+
+find / -name 'vol_mon.cfg'
+Si el archivo no está - copiamos el prototipo, lo creamos con `cp -p /var/opt/OV/bin/instrumentation/vol_mon.cfg /var/opt/OV/conf/OpC/` y lo modificamos, comenetamos todo y después agregamos la lista como corresponde.
