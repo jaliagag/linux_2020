@@ -84,3 +84,5 @@ lvdisplay VolGroup00
 
 find / -name 'vol_mon.cfg'
 Si el archivo no está - copiamos el prototipo, lo creamos con `cp -p /var/opt/OV/bin/instrumentation/vol_mon.cfg /var/opt/OV/conf/OpC/` y lo modificamos, comenetamos todo y después agregamos la lista como corresponde.
+
+ls -lhrt | wc -l
