@@ -1103,3 +1103,8 @@ if the path starts with `-` that tells syslog that it doesn't have to perform a 
     - mail.info -/var/log/mail.info
   - you may lose some messages during a system crash if your are using caching mode
   - using caching mode can improve I/O performance
+
+##
+
+- Partitions: When a disk is partitioned, it's divided into parts. Each part is called a partition. Partitioning a disk allows you to allocate different parts of the disk for different purposes. Having different partition protects the OS.
+- 
