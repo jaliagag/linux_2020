@@ -1,0 +1,30 @@
+# Road to Certification Commands
+
+- `readlink /bin/sh`: show which shell /bin/sh points to.
+- `echo $BASH_VERSION`
+- `echo $SHELL`
+- `uname`: kernel's name
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- ``
+- 
