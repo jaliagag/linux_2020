@@ -87,6 +87,55 @@ The bash command automatically creates a subshell, which is helpful for demonstr
 
 To preserve an environment variable's setting, you need to employ the `export` command. You can either use export when typing in the original variable definition or use it after the variable is defined, by typing **export _variable-name_** at the comman-line prompt.
 
-You can reverse any modifications you make to the variable by using the unset command.
+You can reverse any modifications you make to the variable by using the `unset` command.
 
-67/688
+The shell keeps track of all the commands you have recently used and stores them in your login session's history list - `history` command. To reexecute a command from a history list, we use the number to the left of the history command's output preceded by `!` - `!920`. Run `!!` to run the most recent command
+
+The history list is preserved between login sessions in the file designated by the $HISTFILE environment variable. It's typically the .bash_history file in your home directory.
+
+To remove contents from the histroy file: `history -c` (clear current history list); then, `history -w` (copies the now blank history list to the .bash_history file, overwriting it's contents).
+
+### Editing Text Files
+
+Determine the editor command: `which vim` or `which vi`. _vim_ modes:
+
+1. Command mode: sometimes called normal mode. Best mode for quickly moving around the buffer area.
+2. Insert mode: simple editing. Pressing the **I** key, for _INSERT_.
+3. Ex mode: colon command mode, every command is preceded with a colon (:).
+
+| Keystroke(s) | Description |
+| ------ | -------- |
+| ? | forward search |
+| / | backward search |
+| h | Move cursor left one character.|
+| l | Move cursor right one character.|
+| j | Move cursor down one line (the next line in the text).|
+| k | Move cursor up one line (the previous line in the text).|
+| w | Move cursor forward one word to front of next word.|
+| e | Move cursor to end of current word.|
+| b | Move cursor backward one word.|
+| ^ | Move cursor to beginning of line.|
+| $ | Move cursor to end of line.|
+| gg | Move cursor to the file’s first line.|
+| G | Move cursor to the file’s last line.|
+| nG | Move cursor to file line number n .|
+| Ctrl+B | Scroll up almost one full screen.|
+| Ctrl+F | Scroll down almost one full screen.|
+| Ctrl+U | Scroll up half of a screen.|
+| Ctrl+D | Scroll down half of a screen.|
+| Ctrl+Y | Scroll up one line. |
+| Ctrl+E | Scroll down one line. |
+|dd | Delete current line. |
+|dw | Delete current word. |
+
+### Processing Text using Filters
+
+There are variants of teh cat command - `bzcat`, `xzcat` and `zcat`. These utilities are used to display the contents of compressed files.
+
+`paste` command: display files side by side in an ugly manner.
+
+The `od` utility allows you to display a file's contents in octal (base 8 - default option), hexadecimal (base 16), decimal (base 10) and ASCII; `od [OPTION]... [FILE]...`
+
+`split` command: allows you to divide a large file into smaller chunks, which is handy when you want to quickly create a samaller text file for testing purposes. `split [option] [input [prefix]]`
+
+`sort` command: the output is sorted: `sort [option] [file]`; -n option to order numbers; save output `sort -o newfile originalfile`
