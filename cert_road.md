@@ -45,7 +45,7 @@ type <command>
 
 Within a shell, some commands that you type at the command line are part of (internal to) the shell program. These internal commands are sometimes called _built-in commands_. Other commands are external programs, because they are part of the shell.
 
-An external command command is indicated by the type command displaying the program'sd absolute directory reference within the virtual directory structure.
+An external command command is indicated by the type command displaying the program's absolute directory reference within the virtual directory structure.
 
 ### Using Environment Variables
 
@@ -138,4 +138,86 @@ The `od` utility allows you to display a file's contents in octal (base 8 - defa
 
 `split` command: allows you to divide a large file into smaller chunks, which is handy when you want to quickly create a samaller text file for testing purposes. `split [option] [input [prefix]]`
 
-`sort` command: the output is sorted: `sort [option] [file]`; -n option to order numbers; save output `sort -o newfile originalfile`
+`sort` command: the output is sorted: `sort [option] [file]`; -n option to order numbers; save output `sort -o newfile originalfile`.
+
+`nl` command: number lines in a text file in powerful ways. `nl [option] [file]`; by default, blank lines are no numbered - use the `-ba` switch to number all lines.
+
+### File-viewing commands
+
+A pager utility allows you to view one text page at a time and move throgh the text at your own pace - `more` and `less` utilities.
+
+- `more [option] file`: you can move forward through a text file by pressing the spacebar (one page down) or the Enter key (one line down); you _cannot_ move backward through a file.
+- `less`: more flexible; allows you to move backward. It allows faster file traversal because it does not read the entire file prior to displaying the file's first page. `esc+V` go back one page. Backward search with `?`; Forward search `/`.
+- `head [option] [file]`: by default, it will display the first 10 lines of a text file; display x quantity of lines: `head -n 150 [file]` =  `head -150 [file]`.
+- `tail [option] [file]`: a file's last lines, by default the last 10. Use the `-f` switch to follow and see how the file logs are added.
+
+### File-Sumirizing Commands
+
+- `wc`: determining counts in a text file `wc [option] [file]`; without options, wc will display the file's -number of lines -words -bytes in that order.
+- `cut`: view particular fields within a file's records `cut option [file]`
+  - a text file record is a singgle-file line that ends in a newline linefeed, which is teh ASCII character LF. If your text file records end in the ASCII character NUL (run cat -E filename), you can also use cut on them, but you must use the -z option.
+  - text file record demiliter: for some of the cut command options to be properly used, fields must exist within each text file record. these fields are not database-style fields but instead data that is separated by some delimiter. A delimiter is one or more characters that create a boundary between different data items within a record. A single space can be a delimiter.
+  - text file changes:the cut command does not change any data within the text file. It simply copies the data you wish to view and displays it to you.
+- `uniq`: find repeated text lines in a text file. Uniq will find repeated text lines only if they come right after one another
+- `md5 algorithm`: orginally created to be used in cryptography (no longer due to various known vulnerabilities); it's excellent for checking a file's integrity. The md5sum produces a 128-bit hash value. If you copy a file to another system on your network, run the md5sum on the copied file. If you find that the hash values of the original and copied file match, this indicates no file corruption occurred during its transfer. `md5sum file`
+- Secure Hash Algorithms (SHA) is a family of various hast functions. Though typically used for cryptography purposes, they can also be used to verify a file's integrity after it's copied or moved to another location. Usually located `/usr/bin/sha???sum` or `/bin/sha???sum` - each utility includes the SHA message digest it employs within its name. the sha512sum utility uses SHA-512 algorithm, which is the best to use for security purposes and is typically employed to hash salted passwords the the /etc/shadow file on Linux
+
+### Regualr expressions
+
+A regular expression is a pattern template you define for a utility such as grep, which then uses the pattern to filter text.
+
+The `grep` command is powerful in its use of regex, which will help with filtering text files.
+
+| short | long | description |
+| ---- | ----- | ------ |
+| -c | --count | Display a count of text file records that contain a PATTERN match. |
+| -d action | --directories=action | When a file is a directory, if action is set to read,read the directory as if it were a regular text file; if action is set to skip, ignore the directory; and if action is set to recurse, act as if the - R, -r, or --recursive option was used. |
+| -E | --extended-regexp | Designate the PATTERN as an extended regular expression. |
+| -i | --ignore-case | Ignore the case in the PATTERN as well as in any text file records. |
+| -R, -r | --recursive | Search a directory’s contents, and for any subdirectory within the original directory tree, consecutively search its contents as well (recursively). |
+| -v | --invert-match | Display only text files records that do not contain a PATTERN match. |
+| -f | -file? | indicate the file that holds the patterns |
+| -v | ? | list  of text file records that do not contain the pattern |
+
+`grep [option] pattern [file]`
+
+The grep command returns each file record (line) that contains an instance of the PATTERN.
+
+- .* --> multiple characters
+- . --> a single character
+- [] --> to represent various characters
+- ^ --> find text records that begin with particular characters
+- $ --> find text file records where particular characters are at the record's end.
+
+To search for a special character, preced the pattern by \
+
+- grep -F == fgrep
+- grep -E == egrep
+
+### Using Streams, Redirection, and Pipes
+
+It is important to know that Linux treats every object as a file. Each file object is identified using a _file descriptor_, an integer that classifies a process's open files. The file descriptor that identifies output from a command or script file is 1; it is also identified by the abbreviation STDOUT.
+
+By default, STDOUT directs output to your current terminal. Your prcess's current terminal is represented by the /dev/tty file.
+
+`>` redirection operator. `>>` append operator
+
+#### Redirecting Standard Error
+
+The file descriptor that identifies a command or script file error is 2. It is also identified by the abbreviation STDERR; by default, it's sent to the terminal. The basic redirection operator to send STDERR to a file is the `2>` operator. `2>>` append.
+
+To send STDERR and STDOUT to the same file, use `&>`. 
+
+To _throw away_ the STDERR you can redirect them to `/dev/null` file (AKA black hole; anything you put into it, you cannot retrieve).
+
+```bash
+grep -d skip hsots: /etc/* 2> /dev/null
+```
+
+#### Regulating Standard Input
+
+Standard input, by default, comes into your Linux system via the keyboard and/or other input devices. The file descriptor that identifies an input into a command or script file is 0, and it's abbreviation is STDIN. The basic redirection for STDIN is `<`; the `tr` command is one of the few utilities that require you to redirect STDIN.
+
+55/105
+
+
