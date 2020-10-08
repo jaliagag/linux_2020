@@ -4,7 +4,7 @@
 - `echo $BASH_VERSION`
 - `echo $SHELL`
 - `uname`: kernel's name
-- ``
+- `tee <text file name to b created>`: the thee command allows you to both save the output to a file and display it to STDOUT. Useful when you are installing software from the command line and wnat to see what is happening as well as keep a log file of the transacton for later review.
 - ``
 - ``
 - ``

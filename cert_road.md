@@ -6,7 +6,7 @@
   - <https://www.booleanworld.com/guide-linux-top-command/>
   - <https://www.certdepot.net/>
 
-## Chapter 1
+## Chapter 1 - Exploring Linux Command-Line Tools
 
 When you successfully log into a tty terminal, the program providing that prompt is a shell. Some shells:
 
@@ -162,7 +162,7 @@ A pager utility allows you to view one text page at a time and move throgh the t
 - `md5 algorithm`: orginally created to be used in cryptography (no longer due to various known vulnerabilities); it's excellent for checking a file's integrity. The md5sum produces a 128-bit hash value. If you copy a file to another system on your network, run the md5sum on the copied file. If you find that the hash values of the original and copied file match, this indicates no file corruption occurred during its transfer. `md5sum file`
 - Secure Hash Algorithms (SHA) is a family of various hast functions. Though typically used for cryptography purposes, they can also be used to verify a file's integrity after it's copied or moved to another location. Usually located `/usr/bin/sha???sum` or `/bin/sha???sum` - each utility includes the SHA message digest it employs within its name. the sha512sum utility uses SHA-512 algorithm, which is the best to use for security purposes and is typically employed to hash salted passwords the the /etc/shadow file on Linux
 
-### Regualr expressions
+### Regular expressions
 
 A regular expression is a pattern template you define for a utility such as grep, which then uses the pattern to filter text.
 
@@ -218,6 +218,177 @@ grep -d skip hsots: /etc/* 2> /dev/null
 
 Standard input, by default, comes into your Linux system via the keyboard and/or other input devices. The file descriptor that identifies an input into a command or script file is 0, and it's abbreviation is STDIN. The basic redirection for STDIN is `<`; the `tr` command is one of the few utilities that require you to redirect STDIN.
 
-55/105
+#### Pipes
+
+With the pipe, you can redirect STDOUT, STDIN, and STDERR between multiple commands all on one command line. The first command is executed; it's STDOUT is redirected as STDIN into the second command
+
+#### Using sed
+
+_Stream editor_. Edit text without having to pull out a full-fledged text editor. A stream editor modifies text that is passed to it via a file or output from a pipeline. This editor uses special commands to make text changes asthe text "streams" through the editor utility.
+
+- `sed`: it edits a stream of text data based on a set of commands you supply ahead of time.
+
+The sed editor changes data based on commands either entered into the command line or stored in a text file.
+
+1. reads one text line at a time from the input stream
+2. matches that text with the supplied editor commands
+3. modifies the text as specified in the commands
+4. displays the modified text
+
+Syntax
+
+`sed [options] [script] [filename]`
+
+By default, sed will use the text from STDIN to modify it according to the specified commands. Example:
+
+`echo 'I like cake' | sed 's/cake/donuts` > `I like donuts`
+
+The sed utility's command (substitute) specifies that if the first text string, cake, is found, it is changed to donuts in te output. Text words delimited via `/` and the SCRIPT is encased in single quotation marks. The example above only removes the _first_ instance of the cake word; to substitute all, you can add and the end of the script `/g`.
+
+The data on a file is _NOT_ changed; the stream editor only displays the modified text to STDOUT.
+
+- To delete lines: syntax `PATTERN/d` for the sed command's script. `sed '/paula/d'` < delete lines that contain 'paula'.
+- change an entire line of text `ADDRESScNEWTEXT`; the address refers to the file's line number, and the newtext is the different text line you want displayed. `sed '4cThe cake was a lie' file.txt`
+
+| short | long | description |
+| ----- | ------ | -------- |
+|-e script | --expression=script | Add commands in script to text processing. The
+script is written as part of the sed command. |
+|-f script | --file=script | Add commands in script to text processing. The
+script is a file.|
+| -r | --regexp-extended | Use extended regular expressions in script. |
+
+To run multiple sed commands include a semicolon (;) between the two script commands.
+
+### Generating Command Lines
+
+Methods to create command-line commands: xargs utility. By piping STDOUT from other commands into the xargs utility, you can build command-line commands on the fly.
+
+`ls -1 EmptyFile?.txt | xargs -p /usr/bin/rm`
+
+- xargs -p : stop and ask permission before enacting the constructed command-line command. When using xargs, it's sometimes required to use the absolute path of the command we are trying to use.
+
+`rm -i $(ls EmptyFile?.txt`
+
+- since the ls command is encased by the $() symbols, the filenames, the STDOUT, are passed to the rm -i command, which inquires as whether or not to delete each found file.
+
+### Summary
+
+- the shell program provides the command-line prompt
+- there are multiple shell programs, the most popular is the bash shell, typically located in the /bin/bash file.
+
+1. D
+2. A
+3. D
+4. A y C
+5. A y D
+6. C
+7. B
+8. E
+9. B
+10. E
+11. C y D
+12. D
+13. C
+14. A C D E
+15. E o C?
+16. B
+17. B y E
+18. D - /dev/tty
+19. A
+20. E
+
+## Chapter 2 - Managing Software and Processes
+
+Linux distributions have created a system for bundling already compiled applications for distribution. This bundle is called a _package_, and it consists of most of the files required to run a single application. You can then install, remove, and manage the entire application as a single package rather than as a group of disjointed files.
+
+Tracking software packages on a Linux system is called _package management_. Linux implements package management by using a database to track the installed packages on the system. The package management database keeps track of not only what packages are installed but also the exact files and file locations required for each application.
+
+- Red Hat package management (RPM)
+- Debian package management (Apt)
+
+Each one uses a different method of tracking application packages and files, but they both track similar information:
+
+- application files: the package database tracks each individual file as well as the folder where it's located
+- library dependencies: the package database tracks what library files are required for each application and can warn you if a dependent library file is not present when you install a package
+- application version: the package database tracks version numbers of applications so that you know whne an updated version of the application is available.
+
+### Using RPM
+
+RPM let's you install, modify, and remove software packages. RH, CentOS and Fedora use RPM, openSUSE. RPM packages have an .rpm extension.
+
+`package-name-version-release.architecture.rpm`
+
+- package-name: name of the software. different distributions may have different package-names
+- version: version number and represents software modifications that are more recent than older version numbers
+- release: also called build number. It represents a smaller program modification than does the version number.
+- architecture: designation of CPU architecture. x86_64 listed for 64-bit processors. Sometimes `noarch` is used to indicate that the package is architectually neutral. Older CPU architecture designations include i386(x86)
+
+```md
+There are two types of RPM packages: **source** and **binary**. Most of the time, you'll want the binary package, because it contains the program bundle needed to successfully run the software. A source RPM contains the program's source code, which can be useful for analysis (or for incorporating your own package customizations). You can tell the differenc between these two package file types because a source RPM has `src` as its _architecture_ in the RPM filename
+
+To obtain copies of RPM files on a RH-based distro employ the yumdownloader utility. On openSUSE, you'll need to employ the zypper install -d package-name command.
+```
+
+The main tool for working with RPM files is the _rpm_ program. It installs, modifies, and removes RPM software packages.
+
+`rpm action [option] package-file`
+
+rpm command actions
+
+| short | long | description |
+| ----- | ------ | -------- |
+| -e | --erase | removes the specified package|
+| -F | --freshen | upgrades a package only if an earlier version already exists |
+| -i | --install | installs the specified package |
+| -q | --query | queries whether the specified package is installed |
+| -U | --upgrade | installs or upgrades the specified package|
+| -V | --verify | verifies whether the package files are present and the package's integrity |
+
+To use the rpm command, you must have the .rpm package file downloaded onto your system. It's common to use the -U action, which installs the new package or upgrades the package if it's already installed.
+
+Adding the -vh option is a popular combination that shows the progress of an update and what it's doing.
+
+Use the -q action to perform a simple query on the package management database for installed packages.
+
+```bash
+rpm -q zsh
+rpm -q docker
+```
+
+rpm command query action options
+
+| short option | long option | description |
+| ------ | -------- | -------- |
+| -c | --configfiles | lists the names and absolute directory references of package configuration files |
+| -i  | --info | provides detailed information, including version, installation date, and signatures |
+| N/A | --provides | shows what facilities the package provides |
+| -R | --requires | displays various package requirements (**dependencies**) |
+| -s | --state | provides states of the different files in a package, such as normal (installed), not installed, or replaced |
+| N/A | --what-provides | shows to what package a file belongs |
+| -a | --all? | list of all the instlaled packages on the system |
+| -p | ? | determine information such as an RPM package's signature or license (from uninstalled package) |
+
+### Verifying RPM packages
+
+The rpm utility's verify action: if you receive a dot (.) from the `rpm -V <package-name>` command, that's good
+
+| code | description |
+| ----- | -------- |
+| ? | unable to perform verification tests|
+| 5 | digest number has changed |
+| c | file is a configuration file for the package |
+| D | device number (major or minor) has changed | 
+| G | group ownership has changed |
+| L | link path has changed |
+| missing | missing file |
+| M | mode (permission or file type) has changed |
+| P | capabilities have changed |
+| S | size of file has changed |
+| T | time stamp (modification) has changed |
+| U | user ownership has changed |
+
+
+
 
 
