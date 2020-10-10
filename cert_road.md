@@ -388,6 +388,13 @@ The rpm utility's verify action: if you receive a dot (.) from the `rpm -V <pack
 | T | time stamp (modification) has changed |
 | U | user ownership has changed |
 
+### Removing RPM packages
+
+To remove an installed package, just use the -e action for the rpm command.
+
+### Extracting data from RPMs
+
+The _rmp2cpio_ utility is helpful to extract files from a RPM package file without installing it. It allows you to build a `cpio` archive from 
 
 
 
