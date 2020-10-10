@@ -390,12 +390,19 @@ The rpm utility's verify action: if you receive a dot (.) from the `rpm -V <pack
 
 ### Removing RPM packages
 
-To remove an installed package, just use the -e action for the rpm command.
+To remove an installed package, just use the `-e` action for the rpm command.
 
 ### Extracting data from RPMs
 
-The _rmp2cpio_ utility is helpful to extract files from a RPM package file without installing it. It allows you to build a `cpio` archive from 
+The _rmp2cpio_ utility is helpful to extract files from a RPM package file without installing it. It allows you to build a `cpio` archive from an RPM file. 
 
+1. You need to use the > redirection symbol in order to create the archive file.
+
+```bash
+rpm2cpio emacs-24.3-22.el7.x86_64.rpm > emacs.cpio
+```
+
+2. Move the files from the cpio archive into directories via the `cpio` command using the `-id` options (-i employs cpy-in mode, which allows files to be copied in from an archive file; -d creates subdirectories in the current working directory whose names match the directory names in the archive)
 
 
 
