@@ -402,7 +402,40 @@ The _rmp2cpio_ utility is helpful to extract files from a RPM package file witho
 rpm2cpio emacs-24.3-22.el7.x86_64.rpm > emacs.cpio
 ```
 
-2. Move the files from the cpio archive into directories via the `cpio` command using the `-id` options (-i employs cpy-in mode, which allows files to be copied in from an archive file; -d creates subdirectories in the current working directory whose names match the directory names in the archive)
+2. Move the files from the cpio archive into directories via the `cpio` command using the `-id` options (-i employs cpy-in mode, which allows files to be copied in from an archive file; -d creates subdirectories in the current working directory whose names match the directory names in the archive, with the exception of adding a precedint dot (.) to each name; the -v option displays what the command was doing as it created the needed subdirectoties and extracted the files)
+
+```bash
+cpio -idv < emacs.cpio
+```
+
+### Using YUM
+
+Each linux distribution has its own central clearinghouse of packages, called a _repository_. The repository contains software packages that have been tested and known to install and owrk correctly in the distribution environment. By placing all known packages into a single repository, the Linux distribution can create a one-stop shopping location for installing all applications.
+
+YUM: YellowDog Update Manager, it allows you to query, install, and remove software packages on your system directly from an official Red Hat directory. The yum command uses the `/etc/yum.repos.d/` directoy to hold files that list the different repositories it checks for packages. Each file in the `yum-repos.d` folder contains information on a repository, such as its URL address and the location of additional package files within the repository. The yum program checks each of these defined repositories for the package requested on the command line.
+
+| Command | Description |
+| ------ | ------- |
+| check-update | Checks the repository for updates to installed packages |
+| clean | Removes temporary files downloaded during installs |
+| deplist | Displays dependencies for the specified package |
+| groupinstall |   Installs the specified package group|
+| info | Displays information about the specified package |
+| install | Installs the specified package |
+| list | Displays information about installed packages |
+| localinstall | Installs a package from a specified RPM file |
+| localupdate | Updates the system from specified RPM files |
+| provides | Shows to what package a file belongs |
+| reinstall | Reinstalls the specified package |
+| remove | Removes a package from the system |
+| resolvedep | Displays packages matching the specified dependency |
+| search | Searches repository package names and descriptions for specified keyword |
+| shell | Enters yum command-line mode |
+| update | Updates the specified package(s) to the latest version in the repository |
+| upgrade | Updates specified package(s) but removes obsolete packages |
+
+133
+      
 
 
 
