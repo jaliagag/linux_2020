@@ -369,7 +369,7 @@ rpm command query action options
 | -a | --all? | list of all the instlaled packages on the system |
 | -p | ? | determine information such as an RPM package's signature or license (from uninstalled package) |
 
-### Verifying RPM packages
+#### Verifying RPM packages
 
 The rpm utility's verify action: if you receive a dot (.) from the `rpm -V <package-name>` command, that's good
 
@@ -388,11 +388,11 @@ The rpm utility's verify action: if you receive a dot (.) from the `rpm -V <pack
 | T | time stamp (modification) has changed |
 | U | user ownership has changed |
 
-### Removing RPM packages
+#### Removing RPM packages
 
 To remove an installed package, just use the `-e` action for the rpm command.
 
-### Extracting data from RPMs
+#### Extracting data from RPMs
 
 The _rmp2cpio_ utility is helpful to extract files from a RPM package file without installing it. It allows you to build a `cpio` archive from an RPM file. 
 
@@ -408,9 +408,9 @@ rpm2cpio emacs-24.3-22.el7.x86_64.rpm > emacs.cpio
 cpio -idv < emacs.cpio
 ```
 
-### Using YUM
+#### Using YUM
 
-Each linux distribution has its own central clearinghouse of packages, called a _repository_. The repository contains software packages that have been tested and known to install and owrk correctly in the distribution environment. By placing all known packages into a single repository, the Linux distribution can create a one-stop shopping location for installing all applications.
+Each linux distribution has its own central clearinghouse of packages, called a _repository_. The repository contains software packages that have been tested and known to install and work correctly in the distribution environment. By placing all known packages into a single repository, the Linux distribution can create a one-stop shopping location for installing all applications.
 
 YUM: YellowDog Update Manager, it allows you to query, install, and remove software packages on your system directly from an official Red Hat directory. The yum command uses the `/etc/yum.repos.d/` directoy to hold files that list the different repositories it checks for packages. Each file in the `yum-repos.d` folder contains information on a repository, such as its URL address and the location of additional package files within the repository. The yum program checks each of these defined repositories for the package requested on the command line.
 
@@ -434,7 +434,68 @@ YUM: YellowDog Update Manager, it allows you to query, install, and remove softw
 | update | Updates the specified package(s) to the latest version in the repository |
 | upgrade | Updates specified package(s) but removes obsolete packages |
 
-133
+Primary YUM configuration file is the `/etc/yum.conf`. This file contains settings (directives) that determine things such as where to record YUM log data.
+
+#### Using ZYpp
+
+openSUSE has its own package management tool called ZYpp (AKA _libzypp_). Its zypper command allows you to query, install, and remove software packages on your system directly from an openSUSE repository. Most common commands:
+
+- help
+- install (short: in)
+- info
+- list-updates
+- lr (displays repository information)
+- packages (lists all available packages or lists available packages from a specified repository)
+- refresh
+- remove (short: re)
+- search (short: se)
+- what-provides
+- update
+- verify
+
+### Using Debian Packages
+
+#### Debian Package File Conventions
+
+Debian bundles application files into a single .deb package file for distribution that uses the following filename format: `PACKAGE-NAME-VERSION-RELEASE_ARCHITECTURE.deb`. In the architecture you typically find amd64.
+
+#### The _dpkg_ Command Set
+
+The core tool to use for handling .deb files is the _dpkg_ program, which is a cl utility that has options for installing, updating, and removing .deb package files. Command actions:
+
+|Short|Long|Description|
+|-----|-------|--------|
+|-c | --contents | Displays the contents of a package file|
+|-C| --audit| Searches for broken installed packages and suggests how to fix them|
+|N/A| --configure| Reconfigures an installed package |
+|N/A |--get-selections| Displays currently installed packages|
+|-i|--install| Installs the package; if package is already installed, upgrades it|
+|-I |--info| Displays information about an uninstalled package file|
+|-l |--list| Lists all installed packages matching a specified pattern|
+|-L |--listfiles| Lists the installed files associated with a package|
+|-p |--print-avail|  Displays information about an installed package|
+|-P |--purge| Removes an installed package, including configuration files|
+|-r|--remove| Removes an installed package but leaves the configuration files|
+|-s |--status| Displays the status of the specified package |
+|-S|--search| Locates the package that owns the specified files|
+
+To use the `dpkg` program, you must have the .deb software package available on your system. The Debian distribution also provides a central clearinghouse for Debian packages at <www.debian.org/distrib/packages>.
+
+For missing dependency problems, you can quickly check whether a particular package or library is installed via the dpkg -s action.
+
+Removing a package
+
+1. `-r` action removes the package but keeps any configuration and data files associated with the package installed (useful when reinstalling an existing package and don't want to have to reconfigure things)
+2. `-P` to remove the entire package, purges the entire package, including config files and data files from the system
+
+#### Looking at the APT Suite
+
+
+   
+ 
+
+
+
       
 
 
