@@ -490,6 +490,30 @@ Removing a package
 
 #### Looking at the APT Suite
 
+The Advanced Package Tool (APT) suite is used for working with Debian repositories. This includes the _apt-cache_ program that provides information about the package database, and the _apt-get_ program that does the work of installing, updating and removing packages. New Debian package managent tool: _apt_. It provides improved user interface features and simpler commands; also, easier to understand action names.
+
+the APT suite of tools relies on the `/etc/apt/sources.list` file to identify the locations of where to look for repositories. 
+
+- _apt-cache_ for displaying information about packages
+  - depends: display dependencies required
+  - pkgnames: all packages installed on the system
+  - search
+  - showpkg lists information about a specific package
+  - stats - package statistics
+  - unmet: shows unmet dependencies for all installed packages or the specified installed package
+- _apt-get_ - it's what you use to install, update, and remove packages from a Debian package repository.
+  - autoclean: removes information about packages that are no longer in the repository
+  - check: checks the package management db for inconsistencies
+  - clean: cleans up the db and any temporary download files
+  - dist-upgrade: upgrades all packages, but monitors for package dependencies
+  - dselect-upgrade: completes any package changes left undone
+  - install: intalls or updates a package and updates the package management db
+  - source: retrieves the source code package for the specified package
+  - update: retrieves updated information about packages in the repository
+  - upgrade: upgrades all installed packages to newest versions
+
+
+
 
    
  
