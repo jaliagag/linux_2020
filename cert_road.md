@@ -512,7 +512,52 @@ the APT suite of tools relies on the `/etc/apt/sources.list` file to identify th
   - update: retrieves updated information about packages in the repository
   - upgrade: upgrades all installed packages to newest versions
 
-#### 
+#### Reconfiguring Packages
+
+_dpkg-reconfigure_ tool: used to return packages to return to the package's initial installation state (say changes that caused serious unexpected problems). _debonf-show_ allows you to view the package's configuration.
+
+### Managing Shared Libraries
+
+#### Library Principles
+
+A system _library_ is a collection of items, such as program functions. _Functions_ are self-contained code modules that perform a specific task within an application, such as opening and reading a data file. The benefit of splitting functions into separate library files is that multiple applications that use the same functions can share the same library files.
+
+Linux supports two different flavors of libraries. One is static libraries (AKA _statically linked libraries_) that are copied into an application when it is compiled. The other flavor is _shared libraries_ (aka _dynamic libraries_) where the library functions are copied into memory and bound to the application when the program is launched. This is called _loading a library_.
+
+#### Locating Library Files
+
+When a program i using a shared function, the system will search for the function's library file in a specific order; looking in directories stored within:
+
+1. LD_LIBRARY_PATH environment variable
+   1. modifying this env var by including a program's definition: export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/devops/library/
+2. Program's PATH environment variable
+3. /etc/ld.so.conf.d/ folder
+4. /etc/ld.so.conf file
+5. /lib*/ and /usr/lib*/ folders
+   1. /lib*/ folders such as /lib/ and /lib64/ libraries needed by system utilities that reside in the /bin/ and /sbin/ directories
+   2. /usr/lib*/ folders, such as /usr/lib/ and /usr/lib64/ are for libraries needed by additional software, suchas database utilities like MariaDB
+
+If another library is located in the /etc/ld.so.conf fi le and it is listed above the include operation, then the system will search that library directory before the fi les in the /etc/ld.so.conf.d/ folder. This is something to keep in mind if you are troubleshooting library problems.
+
+#### Loading Dynamically
+
+When a program is started, the _dynamic linker_ (or _dynamic loader_) is responsible for finding th eprogram's needed library functions. After they are located, the dynamic linker will copy them into memory and bind them to the program.
+
+Historically, the dynamic linker executable has a name like ld.so and ld-linux.so*
+
+#### Library Management Commands
+
+##### Managing the Library Cache
+
+The _library cache_ is a catalog of library directories and all the various libraries contained within them. The system reads this cache file to quickly find needed libraries when it is loading programs. This makes it much faster for loading libraries than searching through all the possible direcotory locations for a particular required library file.
+
+When new libraries or library directories are added to the system, this library cache file must be updated. However, it is not a simple text file you can just edit. Instead, you have to employ the _ldconfig_ command.
+
+Typically, when installing software via a package manager, the ldconfig command is run automatically.
+
+- ldconfig -v : see what library files are cataloged.
+
+
 
 
    
