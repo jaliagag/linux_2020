@@ -557,15 +557,85 @@ Typically, when installing software via a package manager, the ldconfig command 
 
 - ldconfig -v : see what library files are cataloged.
 
+Troubleshooting shared library dependencies: `ldd <command>` track down missing library files for an application; displays a list of the library files required for the specified app.
 
+### Managing Processes
 
+#### Examining Process Lists
 
-   
+Linux calls each running program a _process_. The linux system assigns each process a _process ID (PID)_ and manages how the process uses memory and CPU time based on that PID. When a Linux system first boots, it starts a special process called the _init process_. The `init` process is the core of the Linux system; it runs scripts that start all of the other processes
+
+##### Viewing Processes with ps
+
+Processes that are currently running: `ps`. By default the ps program shows only the processes that are running in the current user shell.
+
+The basic output of the `ps` command shows the PID assigned to each process, the terminal (TTY) that they were started from, and the CPU time that the process has used. The current ps program used in Linux supports three different styles fo command-line options:
+
+- Unix-style options, which are preceded by a dash
+- Berkley Software Distribution (BSD)-style options, which are not prceded by a dash
+- GNU long options, which are preceded by a double dash
+
+To see every process running on the system, use the Unix-style -ef option combination, `ps -ef`. This information provides:
+
+- UID: the user responsible for running the process
+- PID: process ID of the process
+- PPID: parent process OD (if a process was started by another process)
+- C: the processor utilization over the lifetime of the process
+- STIME: the system time when the process was started
+- TTY: the terminal device from which the process was started
+- TIME: the cumulative CPU time required to run the process
+- CMD: the name of the program that was started in the process
+
+If a process is shown in _brackets_, it means that the process is currently _swapped_ out of physical memory into virtual memory on the hard drive.
+
+##### Understanding Process States
+
+Processes that are swapped into virtual memory are called _sleeping_. Often the Linux kernel places a process into sleep mode while the process is waiting for an event. When the event triggers, the kernel sends the process a signal. 
+
+If the process is _interruptible sleep_ mode, it will receive the signal immediately and wake up.
+
+If the process is in _uninterruptible sleep_ mode, it only wakes up based on an external event, such as hardware becoming unavailable. It will save any other _signals_ sent while it was sleeping and act on them once it wakes up.
+
+If a process has eneded but its parent process hasn't acknowledged the termination signal because it's sleeping, the process is considered a _zombie_. It's stuck in a limbo state between running and terminating until the parent process acknowledges the termination signal.
+
+##### Slecting Processes with ps
+
+|     Option(s)                                          |     Description                                                                                     |
+|--------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
+|     A                                                  |     Display every process on the system   associated with a tty terminal                            |
+|     -A, -e                                             |     Display every process on the system                                                             |
+|     -C CommandList                                     |     Only display processes running a command in the CommandList                                     |
+|     -g GIDList, or -group GIDList                      |     Only display processes whose current effective group is in GIDList                              |
+|     -G GIDList, or -Group GIDList                      |     Only display processes whose current real group is in GIDList                                   |
+|     -N                                                 |     Display every process except selected processes                                                 |
+|     p PIDList, -p PIDList or   --pid PIDList           |     Only display PIDList   processes                                                                |
+|     -r                                                 |     Only display selected processes that are in a state of running                                  |
+|     -t ttyList, or --tty ttyList                       |     List every process associated with the ttyList terminals                                        |
+|     -T                                                 |     List every process associated with the current ttyterminal                                      |
+|     -u UserList, or --user UserList                    |     List every process associated with the current tty terminal                                     |
+|     -U UserList, or --User UserList                    |     Only display processes whose real user (username or UID) is in UserList                         |
+|     x                                                  |     Remove restriction of “associated with a   tty terminal”; typically used with the a   option    |
+
+Groups and users are designated real or effective:
+
+- Real indicates that this is the user or group the account is associated with when logging into the system and/or the primary account's group.
+- Effective indicates that the user or group is using a temporary alternative user or group identification, as in the case of SUID and GUID permissions.
+
+If you want ot see _every_ process associated with a particular user or group, it's best to employ both the effective and real options.
+
+##### Viewing Processes with top
+
+The top command displays process information similar to the ps command, but it does it in real-time mode.
+
+The first section of the top output shows general system information. The first line shows the current time, how long the system has been up, the number of users logged in, and the load average on the system.
+
+The load average appears as three numbers: the 1-minute, 5-minute, and 15-minute load averages.
+
+ 
  
 
 
 
-      
-
+ 
 
 
