@@ -590,7 +590,7 @@ If a process is shown in _brackets_, it means that the process is currently _swa
 
 ##### Understanding Process States
 
-Processes that are swapped into virtual memory are called _sleeping_. Often the Linux kernel places a process into sleep mode while the process is waiting for an event. When the event triggers, the kernel sends the process a signal. 
+Processes that are swapped into virtual memory are called _sleeping_. Often the Linux kernel places a process into sleep mode while the process is waiting for an event. When the event triggers, the kernel sends the process a signal.
 
 If the process is _interruptible sleep_ mode, it will receive the signal immediately and wake up.
 
@@ -629,10 +629,101 @@ The top command displays process information similar to the ps command, but it d
 
 The first section of the top output shows general system information. The first line shows the current time, how long the system has been up, the number of users logged in, and the load average on the system.
 
-The load average appears as three numbers: the 1-minute, 5-minute, and 15-minute load averages.
+The load average appears as three numbers: the 1-minute, 5-minute, and 15-minute load averages. The higher the values, the more load the systems is experiencing. If the 15-minute load value is high, your system may be in trouble.
 
- 
- 
+```bash
+last pid:  1712;  load avg:  0.63,  0.99,  0.88;  up 38    +06:41:14                                                                                                    06:06:24
+120 processes: 119 sleeping, 1 on cpu
+CPU states: 97.3% idle,  1.4% user,  1.3% kernel,  0.0% stolen,  0.0% swap
+Kernel: 5273 ctxsw, 42 trap, 3171 intr, 2960 syscall, 16 flt
+Memory: 40G phys mem, 1841M free mem, 8192M total swap, 8187M free swap
+
+PID   USERNAME  NLWP  PRI NICE  SIZE   RES  STATE     TIME    CPU COMMAND
+17860 idmadmin  177   59   0    11G   8064M sleep   265:27  0.26% java
+15587 idmadmin  186   59   0   6036M  3307M sleep   190:31  0.48% java
+13880 idmadmin  140   59   0   3706M  2794M sleep    20.1H  0.10% java
+8864  idmadmin  138   59   0   3665M  1786M sleep   136:45  0.56% java
+```
+
+The top utility's second line shows general process information: how many processes are running,sleeping, stopped, or in a zombie state.
+
+The next line shows general CPU information. The top display breaks down the CPU utilization into several categories depending on the owner of the process (user vs system processes) and the state of the processes (running, idle, or waiting).
+
+Following that, in the top utility's output there are two lines that detail the status of the system memory. The first line shows the status of the _physical_ memory in the system, how much total memory there is, how much is currently being used, and how much is free. The second memory line shows the status of the swap memory area in the system (if any is installed) with the same information.
+
+To look at memory usage:
+
+```bash
+free -h
+      total   used   free   shared buff/cache available
+Mem:  3.9G    1.0G   2.2G     30M   710M        2.6G
+Swap: 472M     0B     472M
+```
+
+- PID: The process ID of the process
+- USER: The username of the owner of the process
+- PR: The priority of the process
+- NI: The nice value of the process
+- VIRT: The total amount of virtual memory used by the process
+- RES: The amount of physical memory the process is using
+- SHR: The amount of memory the process is sharing with other processes
+- S: The process status (D = interruptible sleep, I = idle, R = running, S = sleeping, T = traced or stopped, and Z = zombie)
+- %CPU: The share of CPU time that the process is using
+- %MEM: The share of available physical memory the process is using
+- TIME+: The total CPU time the process has used since starting
+- COMMAND: The command-line name of the process (program started)
+
+By default, when you start `top`, it sorts the processes based on the %CPU value. You can change the sort order by using servera interactive commands
+
+- z: configures color for the table
+- l: toggles display of the load average information line
+- t: toggles display of the CPU information ine
+- m: toggles display of the MEM and SWAP information lines
+
+A handy little utility for monitoring process information is the `watch` command. To use it, you enter watch and follow it by a command you’d like to enact over and over again. By default watch will reissue the command every two seconds. For example, you can type watch uptime to only monitor the system load. But you aren’t limited to just process tracking commands. You can monitor a directory’s changes in real time and more.
+
+#### Terminal Multiplexer: screen and tmux
+
+Multiplexing refers to the usage of two terminal windows side by side; each terminal is it's own process
+
+A `pts` terminal is a pseudo-terminal. the /# after pts indicates which pseudo-terminal the user is employing
+
+#### Foreground and Background Processes
+
+##### Sending a Job to the Background
+
+Place an ampersand symbol (&) after the command - `sleep 3000 &`. When a  command is sent to the background, the system assigns it a job number (in [brackets]) as well as a PID.
+
+##### Sending multiple jobs to the background
+
+You can start anay number of background jobs from the cl prompt. Each time you start a new job, the shell assigns it a new job number. and the Linux system assigns it a new PID. The plus sign (+) next to the new background job's number denotes the last job added to the background job stack. The minus sign (-) indicates that this particular job is the second-to-last process, which was added to the job stack.
+
+##### Bringing Jobs to the Foreground
+
+To bring a process to the foreground, use the `fg` command and the background job's number, prceded by a percent sign (%) `fg %2`
+
+##### Sending a Running Program to the Background
+
+First pause the process using the Ctrl+Z key combination; this will stop (pause) the program and assign it a job number. After you have the paused program0s job number, employ the bg command to send it to the background.
+
+##### Stopping a job
+
+Stopping a bg job before it has completed: _kill_ command and the job's number preceded by & `kill %1`.
+
+##### Keeping a Job Running after Logout
+
+Each bacckground process is tied to your session's terminal. If the terminal session exits, the brackground process also exits. If you want your script to continue running in background mode after you'be logged off the temrinal, you'll need to emplot the _nohup_ utility. This command will make your background jobs immune to hang-up signals, which are sent to the job when a termina lsession exits. `nohup bash CriticalBackups.sh`
+
+#### Managing Process Priorities
+
+The scheduling priority for a process determines when it obtains CPU time and memory resources in comparison to other processes that opearte at a different priority. However, you may run some applications that need either a higher or lower level of priority.
+
+The _nice_ and _renice_ commands allow you to set and change a program0s _niceness level_, which in turn modifies the priority level assigned by the system to an application The `nice` allows you to start an application with a nondefault niceness level setting. `nice -n VALUE COMMAND`; It allows you to set the value of the priority for the process.
+
+The VALUE parameter is a numberic value from -20 to 19. The lower the number, the higher priority the process receives. The default niceness level is zero.
+
+The COMMAND argument indicates the program must start at the specified niceness level.
+
 
 
 
