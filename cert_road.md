@@ -803,7 +803,11 @@ We can send signals by defining user-name, user ID (UID), terminal with which th
 
 ## Chaper 3 - Configuring Hardware
 
-pag183pdf
+### Configuring the Firmware and Core Hardware
+
+How the core hardware operates
+
+#### 
 
 
 
