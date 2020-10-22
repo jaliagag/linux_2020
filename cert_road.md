@@ -724,6 +724,40 @@ The VALUE parameter is a numberic value from -20 to 19. The lower the number, th
 
 The COMMAND argument indicates the program must start at the specified niceness level.
 
+To change the priority of a process that's already running, use the _renice_ command: `renice PRIORITY [-p PIDS] [-u USERS] [-g GROUPS]`; This command allows you to change the priority of multiple processes based on a list of PID values, all of the processes started by one or more users, or all of the processes started by one or more groups.
+
+`# sudo renice -10 -p 1949`
+`# 1949 (process ID) old priority -5, new priority -10`
+
+Only if you have super user privileges can you set a nice value less than 0 (increase the priority) of a running process.
+
+```bash
+# starting a process
+nice -10
+# PID 10
+# starting a process and giving it a value of -10
+sudo nice --10
+```
+
+#### Sending Signals to Processes
+
+In Linux, processes communicate with each other using process signales. A _process signal_ is a predefined message that processes recognize and may choose to ignore or act on. A few of these signals:
+
+|Number| name | description|
+|-------|-------- | ------- |
+|1| HUP| hangs up|
+|2| INT| interrupts|
+|3| QUIT| stops running|
+|9| KILL| Unconditionally terminates|
+|11| SEGV| segments violation|
+|15| TERM| terminates if possible|
+|17| STOP| stops unconditionally, but doesn't terminate|
+|18| TSTP| stops or pauses, but continues to run in background|
+|19| CONT| resumes execution after STOP or TSTP|
+
+You'll often see the Linux process signals written with SIG attached to them. For example, TERM is also written as SIGTERM, and KILL is also SIGKILL.
+
+
 
 
 
