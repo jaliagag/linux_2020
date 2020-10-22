@@ -757,6 +757,54 @@ In Linux, processes communicate with each other using process signales. A _proce
 
 You'll often see the Linux process signals written with SIG attached to them. For example, TERM is also written as SIGTERM, and KILL is also SIGKILL.
 
+#### Sending Signals with the KILL Command
+
+By default the `kill` command sends a TERM signal to all the PIDs listed on the command line.
+
+To send a process signal, you must either be the owner of the process or have super user privileges. The TERM signal only asks the process to _kindly_ stop running. To kill a process running in the background, we can use the job number, preceeded by a percent sign `kill -9 %1`. When processes ignores de request, we need to get **forceful**: use the `-s` option to specify other signals.
+
+It is generally accepted procedure to first try thee TERM signal. If the process ignores that, try the INT or HUP signal. These signal try to gracefully stop doing what it was doing before shutting down.
+
+#### Sending Signals with the killall Command
+
+The kill command only accepts the process PID; the _killall_ command can select a process based on the command it is executing and send it a signal. Similar to kill, if no signal is specified, TERM is sent.
+
+#### Sending Signals with the pkill Command
+
+We can send signals by defining user-name, user ID (UID), terminal with which the process is associated, and so on. We can also use wildcard characters. `-t` option is used to see all running processes by their termianl (reguarly used with pgrep to see the output of what we are about to kill). Like the other signal-sending utilities, the pkill command by default sends a TERM signal.
+
+### EXAMN
+
+1. E, A
+   1. A, B, D, E
+2. E
+3. E, C
+4. A
+5. C, D
+6. D
+7. A
+8. C
+9.  B
+10. C, E, B
+    1.  C, D E
+11. A, C, D
+12. D
+13. A
+14. E (boleo)
+15. B (boleo)
+    1.  D
+16. B
+17. A
+18. B
+19. C
+20. D
+
+17/20
+
+## Chaper 3 - Configuring Hardware
+
+pag183pdf
+
 
 
 

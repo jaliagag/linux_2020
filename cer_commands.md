@@ -19,8 +19,8 @@
 | Fedora           | .rpm        | dnf                           |
 | FreeBSD          | Ports, .txz | make, pkg                     |
 
-- ``
-- ``
+- `ldconfig`: updates the cache (a library cache is a catalog of library directories and all various libraries contained withing them)
+- `ldd`: view libraries required by a particular program
 - ``
 - ``
 - ``
