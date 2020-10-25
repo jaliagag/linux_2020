@@ -805,9 +805,66 @@ We can send signals by defining user-name, user ID (UID), terminal with which th
 
 ### Configuring the Firmware and Core Hardware
 
-How the core hardware operates
+How the core hardware operates.
 
-#### 
+#### Understanding the Role of Firmware
+
+Built-in firmware to control how the installed operating system starts. On older machines, Basic Input/Output System (BIOS). Newer machines Unified Extensible Firmware Interface (UEFI), which is responsible for maintaining the system hastware status and launching an installed OS. Both methods eventually launch the main OS bue each method uses different ways of doing that.
+
+##### The BIOS Startup
+
+BIOS system has certain limitations - to get around that limitation, most OS split the boot process into two parts.
+
+First, the BIOS runs a _boot loader_ program, a small programm that initializes the necessary hardware to find and run the full OS program. This program usually has a config file so that you can tell it where to look to find the actual OS file to run or even to produce a small menu allowing the user to boot between ultiple OSs.
+
+To get things started, the BIOS must know where to find the boot loader program on an installed storage device. Most BIOS setups allow you to load teh boot loader from several locations:
+
+- An internal hard drive
+- An external hard drive
+- A CD or DVD drive
+- A USB memory stick
+- An ISO file
+- A netwoek server using either NFS, HTTP, or FTOP
+
+When booting from a hard drive, you must designate which hard drive, and partition on the hard drive, the BIOS should load the boot loader program from. This is done by defining a _master boot record_ (MBR). The MBR is the first sector on the first hard drive partition on the system. There is only one MBR for the computer system. The bootloader is very small. It mainly points to the location of the actual OS kernel file, stored in a boot sector of a separate partition installed on the system.
+
+##### The UEFI (Unified Extensible Firmware Interface) Startup
+
+Instead of relying on a sinble boot sector on a hard drive to hold the boot loader program, UEFI specifies a special disk partition, called _EFI System Partition_ (ESP), to store boot loader programs. On Linux systems, the ESP is typically mounted in the /boot/efi directory, and the boot loader files are typically stored using the .efi filename extension, such as linux.efi.
+
+The UEFI firmware utilizes a built-in mini boot loader (sometimes referred to as a boot manager) that allows you to configure which boot loader program file to launch.
+
+#### Device Interfaces
+
+Each device you connect to your Linux system uses some type of standard protocol to communicate with the system hardware. The Linux kernel software must know how to send data to and receive data from the hardware device using those protocols.
+
+##### PCI Boards
+
+The _Peripheral Component Interconnect_ (PCI) - connecting hardware boards to PC motherboards. The PCI _Express_ standard is currently used on most server and desktop workstations to provide a common interface for external hardware devices.
+
+Devices that use PCI boards
+
+- Internal Hard Drives: Hard drives using the Serial Advanced Technology Attachment (SATA) and Small Computer System Interface (SCSI) interface often use PCI boards to connect with workstations or servers - Linux kernel recognizes both.
+- External hard drives: Network hard drives using the Fibre Channel standard provide a high-speed shared drive environment for server environments. To communicate on a fiber channel network, the server usually uses PCI boards that support the _host bus adapter (HBA)_ standard.
+- Network interface cards: hard-wired network cards allow you to connect the machine to a local area network (LAN) using the common RJ-45 cable standard.
+- Wireless cards: PCI boards are available that support he IEEE 802.11 standard for wireless connection to LANs.
+- Bluetoot devices: the bluetooth technology allows for short distance wireless communication with other bluetooth devices in a peer-to-peer network setup.
+- Video accelerators: applications that require advanced graphics to offload the video processing requirements from the CPU to provide faster graphics.
+- Audio cards: high quality sound
+
+#### USB interface
+
+The _Universal Serial Bus (USB)_ interface uses serial communications. USB standard 3.2 allows for data transfer speeds up to 20 Gbps.
+
+There are two setps to ge Linux to interact with USB devices. First, the Linux kernel must have the proper module installed to recognize the UB controller that is installed on the machine. The controller provides communication between the Linux kernel an the ISB bus on the system. When the Linux kernel can communicate with the USB bus, any device you plug into a ISB port on the system will be recognized by the kernel, but may not necessarily be useful. Second, the Linux system must then also have a kernel module installed for the individual device type plugged into the USB bus.
+
+#### The GPIO Interface
+
+The _General Purpose Input/Output (GPIO)_ interface has become popular with small utility Linux systems, designed for controlling external devices for automation projects (Raspberry Pi). This interface provides multiple digital input and output lines that you can control individually, down to the single-bit level.
+
+The GPIO interface provides a wealth of possibilities for using Linux to control objects and environments.
+
+
 
 
 
