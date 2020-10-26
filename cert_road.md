@@ -864,6 +864,62 @@ The _General Purpose Input/Output (GPIO)_ interface has become popular with smal
 
 The GPIO interface provides a wealth of possibilities for using Linux to control objects and environments.
 
+#### The /dev Directory
+
+After the Linux kernel communicates with a device on an interface, it must be able to transfer data to and from the device. This is done using _device files_. Device files are files that the Linux kernel creates in the special /dev directory to interface with hardware devices. There are two types of device files in Linux
+
+- Character device files: transfer data one character at a time. Often used for devices such as terminals and USB devices.
+- Block device files: transfer data in large blocks of data. Often used for high-speed data transfer devices, hard drives and network cards.
+
+The type of device file is denoted by the first letter in the permissions list.
+
+The hard drive devices, sda and sda1, show the letter b, indicating that they are block device files. The tty terminal files show the letter c, indicating they are character device files.
+
+Besides device files, Linux also provides a system called the _device mapper_. It maps physical block devices to virtual block devices. The virtual block devices allow the system to intercept the data written to or read from the physical device and perform some type of operation on them. Mapped devices are used by the Logical Volume Manager (LVM) for creating logical drives and by the Linux Unified Key Setup (LUKS) for encrypting data on hard drives
+
+The device mapper creates virtual devices in the /dev/mapper directory. These files are links to the physical block device files in the /dev directory.
+
+#### The /proc Directory
+
+Used for troubleshooting hardware issues. It's not a physical directory on the filesystem, but instead a virtual directory that the kernel dynamically populates to provide access to information about the system hardware settings and status.
+
+The Linux kernel changes the files and data inthe _/proc_ directory as it monitors the status of hardware on the system. To view the status of the hardware devices and settings, you just need to read the contents of the virtual files.
+
+Various /proc files are available for different system features, including the interrupt requests (IRQs), input/output (I/O) ports, and direct memory access (DMA) channels in use on the system by hardware devices.
+
+##### Interrupt Requests
+
+IRQs allow hardware devices to indicate when they have data to send to the CPU. The PnP system must assign each hardware device installed on the system a unique IRQ address. This is listed on `/proc/interrupts` file.
+
+##### I/O ports
+
+These are location in memory where the CPU can send data to and receive data from the hardware device. The system must assign each device a unique I/O port. This is another feature handled by the PnP system. List is on the `/proc/ioports` file.
+
+We can use the `setpci` command to indicate a device's I/O port.
+
+##### Direct Memory Access
+
+Using I/O ports to send data to the CPU can be somewhat slow. To speed things up, many devices use DMA channels. These channels send data from a hardware device directly to memory on the system, without having to wait for the CPU.
+
+#### The /sys Directory
+
+Also related to working with devices - the /sys directory is another viritual directory, similar to the /proc directory. It is created by the kernel in the sysfs filesystem format, and it provides additional information about hardware devices that any user on the system can access.
+
+Information within the FS is broken down into subdirectories based on the device and function in the system.
+
+#### Working with Devices
+
+##### Finding Devices
+
+The `lsdev` command displays information about the hardware devices installed on the Linux system. It retrieves information from the /proc/interrupts, /proc/ioports, adn /proc/dma virtual files and combines them together in one output.
+
+The `lsblk` command displays information about the block devices installed on the Linux system - it also includes blocks that are related, as with the device-mapped LVM volumes and the associated physical drive.
+
+##### Working with PCI cards
+
+The `lspci` command allows you to view the currently installed and recognized
+
+
 
 
 
