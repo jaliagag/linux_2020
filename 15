@@ -180,7 +180,7 @@ setfacl makes it easier to grant different people access to files (it used to be
 
 We can also set permissions for directories.
 
-We can see that facl are enabled if we see a **+** sign on a file. ACLs allow for more granular permission settings for FileSystems - The `acl` package is a dependency of **systemd**.
+We can see that facl are enabled if we see a **+** sign on a file. ACLs allow for more granular permission settings for FileSystems - The acl package is a dependency of **systemd**.
 
 Sticky bit: sometimes, other than rwx-+, we might see a _t_. It is designed for shared folders. Only the _creator_ (or root) can _delete_ the file. The sticky bit keeps track of _who_ creates what.
 
