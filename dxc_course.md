@@ -22,6 +22,8 @@ Shell --> bash, zsh, dash
 | ------- | ------ |---- |
 | ls | -la | /bin/sh |
 
+View available shells: `cat /etc/shells`
+
 Super User: make modifications to the system - or to make changes in behalf of the another user.
 
 If there's [] --> optional; if there is no [], that's mandatory.
@@ -120,7 +122,73 @@ gentent --> find information inside /etc/group and /etc/passwd files.
 
 ## File Access & Permissions
 
+|type of object |owner permissions | group permissions | other permissions | 
+| ----- | ------- |-------| ----- |
+| d or - | rwx | r - x | r - x |
+
+`chmod`
+
+- u user
+- g group
+- o others
+
+- 4 Read
+- 2 Write
+- 1 Execute
+
+- `chmod g+w <filename>` add write permission to group
+- `chmod o-r <filename>` remove read permissions to other
+- `chmod u+x,g+rwx,o-r <filename>` user execute, group read, write and execute, others can't read
+- `chmod u=rw,g=rw,o-rwx <filename>` = equals overwrites permissions
+- `chmod 660 <filename>` read write for u and g - nothing for o
+
+Default permissions - the uMask. There are permissions that are set at the system level, where the user is not involved (temporary files), others created by users. `.bashrc`, or `/etc/profile`. umask numeric values is backgrads
+
+- 0 read, write and execute
+- 1 read and wirte
+- 2 read and esecute
+- 3 read only
+- 4 write and execute
+- 5 write only
+- 6 execute only
+- 7 no permissions
+
+A directory needs the execute permission to be set up so that you can cd into it.
+
+`chown` changes owner and group.
+
+- `chown jdoe:Marketing <fileName>` changes owner to jdoe : marketing group
+- `chown :Sales <filename>` change only the group, leave the owner
+- `sudo chown -R jaliaga /home/jaliaga/*` make sure you own everything in the home directory; -R recursive
+
+Using .tar as a backup tool saves file permissions.
+
+File system ACL (access control lists) > part of the FS. When the disk is mounted, that's whe it determines whether or not it's going to allow these file system ACLs. When the system boots, it looks for a particular file > **/etc/fstab** all my disks and were they are mounted on. To enable FACLs, if they are not enabled by default, you can go the fstab file and add, **,ACL**:
+
+-UUID=<numberes> /    xfs     defaults,ACL    0 0
+
+Then you have to unmount and mount the disc; if it's your root partition > reboot.
+
+- getfacl to view the ACL of a file - `getfacl fileName` if nothing is returned, no facl enabled.
+- `setfacl`
+  - -m > modifiying `setfacl -m u:zach:rw fileName` > adds zach as user and he can read and write; `setfacl -m g:Markeing:rw fileName` adds a group
+  - -s > setting
+
+setfacl makes it easier to grant different people access to files (it used to be that only one group and one user could have access, and the rest of categories felt to the other part of the permissions); setfacl allows us to set more granular permissions.
+
+We can also set permissions for directories.
+
+We can see that facl are enabled if we see a **+** sign on a file.
+
+Sticky bit: sometimes, other than rwx-+, we might see a _t_. It is designed for shared folders. Only the _creator_ (or root) can _delete_ the file. The sticky bit keeps track of _who_ creates what.
+
+- chmod o+t,g+t filename
+
 ## Disk Partitions & File Systems
+
+Older styled disks: MBR, master boot record. it tells the system all the data spread accross the drive. BIOS loads up and looks for the MBR to find the OS to boot.
+
+You are limited to 4 partitions. Home directory in one partition; system on another; swap on another. If we run out of m
 
 ## Logical Volumes & Filesystem Hierarchy
 
