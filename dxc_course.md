@@ -245,7 +245,7 @@ Changing the label of a partition is non-disruptive. *e2e* --> for chaning label
 
 We can't actually use a disk until it's _mounted_. Everything in Linux is treated like a file, so the new partition has to be mounted into the FS, in our directory tree. **mount** > lists all the disks on the system. 
 
-```
+```md
 - /dev directory contains special files (device files) corresponding to physical devices or system components
 - /media is a regular directory which by common practice is used to mount removable media like CD-ROMs, floppy disks, etc. /dev is essential to the operating system and it cannot be removed
 - /mnt is a regular directory which by common practice is used to mount other filesystems, usually for a short period of time
@@ -274,11 +274,103 @@ The second 0, identifies the order in which a disk will be checked in the event 
 
 The data in the fstab can be mounted without super user privileges.
 
+##### LAB
+
+You can also find the total space taken by each of the directories: `du -h --max-depth=1`
+
+Each hard disk contains one MBR partition. It is the first sector of the disk and is not large enough to hold more than four partitions. These partitions can be:
+
+- Primary
+- Extended
+- Logical
+
+There can be a variation on the number of primary and extended partitions that you can define. For example, you can have three primary partitions and one extended partition. Else, you can have one primary and one extended split into three logical partitions and many more.
+
+You can display the partition table using the parted command that shows you the boot partition and its type.
+
+To display the partition table, type the following command:
+
+`sudo parted /dev/sda u s p`
+
+- u - An abbreviation for Unit command.
+- s - Refers to the unit Sector, this can be interchanged with the following:  B, KiB, MiB, GiB, TiB, kB, MB, GB, TB, %, cyl, chs, compact.
+- p - An abbreviation for Print command.
+
+You can also list the partitions using the fdisk.
+
+To list the partitions, enter the following command:
+
+`sudo fdisk -l /dev/sda`
+
+The -l option in the command above lists the partitions on the /dev/sda device. To format the partition simply use `sudo fdisk <partitionPath>`.
+
+
 ## Logical Volumes & Filesystem Hierarchy
 
 LVM is applied to create virtual disks built on top of physical disks.
 
-Is LVM installed? `sudo yum list lvm*` - the main package we are looking for is the **lvm2**.
+Is LVM installed? `sudo yum list lvm*` - the main package we are looking for is the **lvm2**. If it isn't installed `sudo yum install lvm2`. LVM needs disks which will be attached to the LVM system. When we do that we are expecting a partition already on the system.
+
+Inside the LVM there are 3 things we work with (which need to be created):
+
+3. Logical Volumes: then we slice that volume group as we want. LV.
+2. Volume Group: gather physical disks together to create a combined pool of storage. VG.
+1. Physical Volumes: we might have several physical disks, but they are not considered to be physical volumes. PV. 
+
+![image001](./dxc_comptia/img/001.JPG)
+
+To see the tools available we use `ls /usr/sbin/pv*`, for physical volumes, for instance.
+
+```bash
+sudo pvcreate /dev/sdb1 /dev/sdc1 # bringing in the parted disks
+# we wipe the disks
+sudo pvdisplay # show pv
+sudo vgcreate vg1 /dev/sdb1 /dev/sdc1 # Create a volume group named vg1 using the physical volumes sdb1 and sdc1, that we created above
+sudo lvcreate -L 1500G vg1 -n lv1 # create a LV with 1.5T from vg1 and name it lv1
+lvdisplay # show LVs
+```
+
+The volume group needs to have a logical name where I can map to. Physical drives are mapped to /dev/<deviceID>. There is a service LVM mapper, which will create map entries for all LVMs. Usually /dev/mapper/<vgname>/<lvname>.
+
+Usually the name is given so that it matches it's pool storage use, what it's going to be used for. `sudo vgcreate <vgName> <physicalVolumes>`.
+
+`lvcreate -L <sizeToAllocateToNewLV> <sourceVG> -n <name>`
+
+- `pvs` > show physical volume sizes    
+- `vgs` > show vg
+- `lvs` > show lv
+
+We now have to format it: `sudo mkfs.xfs /dev/vg1/lv1` and we have to mount it: `sudo mount /dev/vg1/lv1 /mnt/Storage` or whatever folder we want to use.
+
+We also have to add it to the `/etc/fstab` for the mount point to be persistent. 
+
+### Add Space to VG
+
+`sudo vgextend <vgName> <pv>` --> this extends the VG; then we have to expand the LV: `sudo lvresize -L +1T <lv2expand>`.
+
+RedHat does not recommend resizing a partition - they recommend backing up the data and making a new xfs partition; it can be done, though. For ext4: `sudo resize2fs /dev/vg1/lv1` without options, this commands takes the entire free space of the partition.
+
+### Deleting LVs
+
+1. First unmount:`sudo umount /mnt/Storage`
+2. we go from LV to GV to PV- run `sudo lvremove /dev/lv1`; `sudo vgremove /dev/vg1`; `sudo pvremove /dev/sb1 /dev/sdc1 /dev/sdd1`.
+
+### FS Hierarchy Standard
+
+FHS - filesystem hierarchy standard. 
+
+- /bin: essential cli utilities available to all users. Essential for a system to work, for the operation.
+- /sbin: administrative commands. Required for the system to boot up.
+- /usr/bin: the rest of the the user commands that are not considered essential.
+- /usr/sbin: for the kernel to use but non-essential
+
+These are all related to the system operation, not so much optional commands. Regularly /boot is a separate partition.
+
+- Every program that we run is represented in /proc as a file - inside we have 'virtual files'.
+- /sys --> info about the system, hyper-v?
+- /usr shared libraries
+- /var logs, print spool 
+
 
 ## Using vi/vim to Edit Files
 
