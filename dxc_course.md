@@ -188,11 +188,97 @@ Sticky bit: sometimes, other than rwx-+, we might see a _t_. It is designed for 
 
 ## Disk Partitions & File Systems
 
-Older styled disks: MBR, master boot record. it tells the system all the data spread accross the drive. BIOS loads up and looks for the MBR to find the OS to boot.
+Older styled disks: MBR, master boot record. it tells the system all the data spread accross the drive. BIOS loads up and looks for the MBR to find the OS to boot. You are limited to 4 partitions. Home directory in one partition; system on another; swap on another. If we run out of memory, all the memory available in our system, we start using the hard drive as memory.
 
-You are limited to 4 partitions. Home directory in one partition; system on another; swap on another. If we run out of m
+Since this limit of 4 partitions, people came up with _logical partitions_ or fake partitions _inside_ a primary partition. Inside the primary partition we might have 3 primary and an extended partition, which technically it's a primary partition but it's ready to hold logical partitions. We can exceed the 4 partitions.
+
+GPT GUID partition table: new system that allows 120 paritions on a disk.
+
+### MBR
+
+- lsblk: listblock devices (anything that provides block storage, pendrive, external drives...).
+- fdisk: sudo fdisk -l (lists) /dev/sdb - it tells; without options, we start modifying the disk.
+  - m - see manual
+  - n - create
+  - p - see partitions
+  - d - delete
+  - w - save, write
+  - t - to change the partition ID - l to see the which ID to use.
+
+n > p(rimary) > 1 (1-4 partitions) > default or sector > +500G
+
+The ID defines what it's going to be used for - 83 is for Linux. 82 swap parition.
+
+### GPT
+
+- gdisk <disk>
+
+### parted
+
+Does MBR and GPT.
+
+Partitions are useless until you put a FS on top of them. We've created the tables to track the partitions, not the files and folders.
+
+### File System formats
+
+- Centos - default xfs
+- Ubuntu - ext4
+
+1. ext4: it has journalling support --> instead of writing directly to a file, you write to a second place on the disk; only when you are 100% done, the information is written to the file (ext3 would write directly to the file; in case of power outage or something, the file could be corrupted). Used be default in Ubuntu
+2. xfs: very similar; uses different driver. It has support for long file names... grow and shrink your partition, allows journaling. Used by default in red hat.
+3. btrfs: better fs - there are many scenarios that cause data loss; it's cutting edge. Software raid ok. "it's the way of the future". It has raid functionality.
+4. zfs: network storage appliances.. not that commonly used; it has a strong following but mainly designed for network storage appliances or clusters doing shared storage
+
+mkfs -> make filesystem; -t -> especifies FS to be used. See all available FSs --> ls /usr/sbin/mkfs*.
+
+- lsblk
+- sudo mkfs.fsformat <disk-to-be-formatted> (something like sudo mkfs.ext4 /dev/sdb1). It erases all the data on the disk.
+
+Swap partitions: we don't put a FS format on those partitions. It stores virtual memory so it does not need a FS. we use an utility called **mkswap** --> sudo mkswap /dev/sdb3. It does not go active right away; we have to tell the system to use it --> sudo swapon /dev/sdb3. 
+
+Tuning commands for FS are found under ls /usr/sbin/tune*.
+
+Changing the label of a partition is non-disruptive. *e2e* --> for chaning labels on ext fs. *xfs_admin* --> for changing labels on xfs fs.
+
+- sudo e2label /dev/sdb1 PublicStorage (
+- sudo xfs_admin -L PrivateStor /dev/sdb2
+
+We can't actually use a disk until it's _mounted_. Everything in Linux is treated like a file, so the new partition has to be mounted into the FS, in our directory tree. **mount** > lists all the disks on the system. 
+
+```
+- /dev directory contains special files (device files) corresponding to physical devices or system components
+- /media is a regular directory which by common practice is used to mount removable media like CD-ROMs, floppy disks, etc. /dev is essential to the operating system and it cannot be removed
+- /mnt is a regular directory which by common practice is used to mount other filesystems, usually for a short period of time
+
+/media and /mnt are only a placeholder directories; removing them won't influence the operating system core operation, but might cause errors with certain applications; for example when a removable media is inserted, or when a process tries to mount a filesystem.
+
+As an example of the difference: /dev contains a reference to a physical CD-ROM drive, /mount might contain a subdirectory through which you can access the files stored on the disc inserted to the same CD-ROM drive.
+```
+
+Regularly, if you mount something under /mnt, that would be available to all users. To mount something only for a specific user, we can mount it on their /home directory, and that makes it available just for them.
+
+- sudo mount /dev/sdb1 /mnt/Public
+- sudo mount /dev/sdb2 /mnt/Private
+
+Use umount /dev/sdb1 or 2 to unmount.
+
+This is temporary - in case of a reboot, all partitions would be unmounted. For them to be persistent, we have to put them into the FS table, which is located in `/etc/fstab`. We can mount using 1) UUID: it stays the same if we move it across systems, 2) paths or 3) labels applied.
+
+- UUID=lñkdljñkdsajlñksdsdflñjk	/		xfs	defaults	0 0
+- /dev/sdb1			/mnt/Public	ext4	defaults	0 0
+- label=Private			/mnt/Private	xfs	defaults	0 1
+
+The first 0 at the end can either be a 1 or a 0; if we run the **dump** utility, which is an old BUR utility, and the first number is a 1, the partition _will_ be included in the backup - if it's a 0, it won't be included in the backup. Dump utility is not used.
+
+The second 0, identifies the order in which a disk will be checked in the event a FS check occurs. If we change the 0 for a 1, the system will check the disk after the boot process is done; if it's 0, the boot process will stop and check the partition and then move on with the boot process. 
+
+The data in the fstab can be mounted without super user privileges.
 
 ## Logical Volumes & Filesystem Hierarchy
+
+LVM is applied to create virtual disks built on top of physical disks.
+
+Is LVM installed? `sudo yum list lvm*` - the main package we are looking for is the **lvm2**.
 
 ## Using vi/vim to Edit Files
 
