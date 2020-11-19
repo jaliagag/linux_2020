@@ -376,6 +376,12 @@ These are all related to the system operation, not so much optional commands. Re
 
 ## Locating & Manipulating Files
 
+Binaries we "can't read" - 
+
+- dmesg - hardware; when i plugin a USB device, a log entry is created on the **demsg**. 
+- cp -r originalFile newFileLocation (with the move directory, you don't need to add the -r, it works just fine without it.
+- Touch command to update the time stamp of a file
+
 ## Searching & Manipulating File Contents
 
 ## Boot Process & Kernel
