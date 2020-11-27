@@ -378,12 +378,31 @@ These are all related to the system operation, not so much optional commands. Re
 
 Binaries we "can't read" - 
 
-- dmesg - hardware; when i plugin a USB device, a log entry is created on the **demsg**. 
-- cp -r originalFile newFileLocation (with the move directory, you don't need to add the -r, it works just fine without it.
+- dmesg - hardware; when i plugin a USB device, a log entry is created on the **dmesg**. 
+- cp -r <originalFile> <newFileLocation> (with the move directory, you don't need to add the -r, it works just fine without it.
 - Touch command to update the time stamp of a file
+- find - more useful (?). looks for filenames - not very fast. find PATH -name filename 2>/dev/null . -perm +rwx --> search files with permissions rwx; -rwx those that are not rwx. search by size: find / -size +5M 2>/dev/null . find / -user root. find /home/ -name XXXX -maxdepth 1
+- locate - searches mlocate database. it has a db of the files on the machine. it is not updated automatically, it happens once a day or sth. information might not be updated.
+- whereis <command> - shows all reasults 
+- which - only shows the first instance
+- type - what type of function a command is considered - sometimes we don't have 
 
 ## Searching & Manipulating File Contents
 
 ## Boot Process & Kernel
 
 ## Graphical User Interfaces
+
+## Managing Services
+
+## Troubleshooting Services
+
+## Managing & Configuring Hardware
+
+## TCP/IP & Networking
+
+## Troubleshooting Network Connections
+
+## Installing and Managing Software
+
+## Installing Software from Source Code
