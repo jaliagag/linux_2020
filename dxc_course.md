@@ -393,7 +393,7 @@ Searching with grep. regex, escaping character - `\`. egrep - used for advanced 
 
 Grep can look into files or directories. -r option to perform recursive search, that is, including subdirectories. `grep -r hola /home/joe`. 
 
-`grep -E "hola|adios`
+`grep -E "hola|adios"`
 
 grep -E == egrep
 

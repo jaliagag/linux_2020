@@ -625,6 +625,9 @@ If you want ot see _every_ process associated with a particular user or group, i
 
 ##### Viewing Processes with top
 
+- <http://www.brendangregg.com/USEmethod/use-linux.html>
+- <http://www.brendangregg.com/USEmethod/use-solaris.html>
+
 The top command displays process information similar to the ps command, but it does it in real-time mode.
 
 The first section of the top output shows general system information. The first line shows the current time, how long the system has been up, the number of users logged in, and the load average on the system.
@@ -917,7 +920,115 @@ The `lsblk` command displays information about the block devices installed on th
 
 ##### Working with PCI cards
 
-The `lspci` command allows you to view the currently installed and recognized
+The `lspci` command allows you to view the currently installed and recognized - Used to troubleshoot PCI card issues, such as when a card isn't recognized by the Linux system.
+
+##### Working with USB Devices
+
+`lsusb` --> show information about USB devices
+
+##### Hardware Modules
+
+The Linux kernel needs device drivers to communicate with the hardware devices installed on your Linux system. The linux kernel uses _modules_, which are individual hardware driver files that can be linked into the kernel at runtime (instead of having a massive binary file including all known hardware devices).
+
+The `.ko` file extension is used to identify the module object files. The standard location for storing module object files is in the `/lib/modules` directory.
+
+Each kernel has its own directory for its own modules (such as `/lib/modules/4.3.3`), allowing you to create separate modules for each kernel version on the system if needed. The modules the kenel will load at boot time are listed in the `/etc/modules` file, one per line. Most hardware modules can be loaded dynamically as the system automatically detects hardware devices. The kernel module configuration are stored in the `/etc/modules.conf`.
+
+The `/lib/modules/<version>/modules.dep` file defines the relationships between modules (some may depend on other modules being loaded).
+
+When you use the `modules_install` target to install the modules, it calls the `depmod` utility which determines the module dependencies and generates the `modules.dep` file automatically.
+
+##### Listing Installed Modules
+
+`lsmod`: lists all modules intalled on your system.
+
+##### Getting Module Information
+
+`modinfo`: more information about a specific module
+
+##### Installing New Modules
+
+- `insmod`: you need to specify the exact module file to load: `sudo insmod /lib/modules/<kernelVersion>/kernel/drivers/bluetooth/btusb.ko`. This program will fail if dependencies are not installed
+- `modprobe`: helps solving module dependencies problem. This program also looks for the module library for the module file that provides the driver for the module name. It has lots of options.
+
+##### Removing Modules
+
+It does not hurt having modules installed even if the hardware is not present. The kernel just ignores unused modules. `rmmod` removes a module by specifying the module name.
+
+However, modprobe can also remove modules: `modprobe -r <moduleName>` - this command invokes the rmmod command.
+
+### Storage Basics
+
+#### Types of drives
+
+Both HDDs and SSDs interface with Linux using the same methods.
+
+1. Parallel Advanced Technology Attachment (PATA): Connects drives using a parallel interface, which requires a wide cable. PATA supports two devices per adapter.
+2. Serial Advanced Technology Attachment (SATA): Connects drives using a serial interface, but at a much faster speed than PATA. SATA supports up to four devices per adapter.
+3. Small Computer System Interface (SCSI): Connects drives using a parallel interface, but with the speed of SATA. SCSI supports up to eight devices per adapter.
+
+When you connect a drive to a Linux system, the Linux kernel assigns the drive device a file in the /dev directory. That file is called a _raw device_, as it provides a path directly to the drive from the Linux system. Any data written to the file is written to the drive, and reading the file reads data directly from the drive.
+
+#### Drive partitions
+
+Most OS allow you to _partition_ a drive into multiple sections. A partition is a self-contained section within the drive that the OS treats as a separate storage space. Partitions must be tracked by some type of indexing system on the drive. Systems that use the old BIOS boot loader method use the _master boot record (MBR)_ method for managing disk partitions. This method supports only up to four _primary partitions_ on a drive. Each primary partition can be split into multiple _extended parititions_.
+
+Modern systems use the UEFI boot loader method use the more advanced _GUID Partition Table (GPT)_ method for managing partitions, which supports up to 128 partitions on a drive. 
+
+Linux creates /dev files for each separate disk partition. It attaches the partition number to the end of the deivce name and numbers the primary partitions starting at 1, so the first primary partition on the first SATA drive would be _/dev/sda1_. MBR extended partitions are numbered starting at 5, so the first extended partition is assigned the file _/deb/sda5_.
+
+#### Automatic drive detection
+
+Linux systems detect drives and partitions at boot time and assign each one a unique device filename. This system has been improved.
+
+Most Linux systems use the _udev_ application. This program runs in the background at all times and automatically detects new hardware connected to the system. As you connect new drives, udev will detect them and assign each one a unique device filename in the /dev directory.
+
+udev also creates _persistent device files_ for storage devices. When you add or remove a removable sotrage device, the /ddev name assigned to it may change, depending on what devices are connected at any given time. For this the udev app uses the /dev/disk directory to create links to the /dev storage device files based on unique attributes of the drive. udev creates for separate directories for storing links:
+
+1. _/dev/disk/by-id_: links stg devs by their manufacturer make, model and serial number
+2. _/dev/disk/by-label_: links stg devs by the label assigned to them
+3. _/dev/disk/by-path_: links stg devs by the physical hardware port they are connected to
+4. _/dev/disk/by-uuid_: links stg devs by the 128-bit universally unique identifier assigned to the device
+
+### Storage alternatives
+
+#### Multipath
+
+Device Mapper (DM) multipathing, which allow you to configure multiple paths between the Linux system and network stg devices. Multipathing aggregates the paths providing for increased throughtout while all paths are active, or fault tolerance if one of the paths becomes inactive.
+
+Tools:
+
+- dm-multipath: kernel **module** that provides multipath support
+- multipath: a command-line command for vieweing multipath devices
+- multipathd: background process for monitoring paths and activating/deactivating paths
+- kpartx: command-line tool for creating device entries for multipath stg devs
+
+The DM multipathing feature uses the dynamic /dev/mapper device file directory in Linux. Linux creates a /dev/mapper device file named mpathN for each new multipath stg dev you add to the system, where N is the number of the multipath drive. That file acts as a normal device file to the Linux system, allowing you to create partitions and file-systems on the multipath device just as you would a normal drive partition.
+
+#### Logical volume manager
+
+The LVM also utilizes the /dev/mapper dynamic device directory to allow you to create virtual drive devices. You can aggregate multiple physical drive partitions into virutal volumes, which you then treat as a single partition on your system. Ypu can add and remove physical partitions as needed to a logical colume, expanding and shrinking the logical volume as needed.
+
+![lvm_image](./assets/lpic001.jpg)
+
+In this example, three physical drives each contain three partitions. The first lv consists of the first 2 partitions of the first drive. The second lv spans drives, combining the third partition of the first drive with the first and second partitions of the second drive to create one volume. The third lv consists of the third partition of the second drive, and the first 2 partitions of the third drive. The third partition of the third drive is left unassigned, and it can be added later to any of the logical volumes when needed.
+
+For each physical partition, you must mark the partition type as the Linux LVM file-system type in _fdisk_ or _gdisk_. Then you must use several LVM tools to create and manage logical volumes:
+
+- _pvcreate_: creates a physical volume
+- _vgcreate_: groups physical volumes into a volume group
+- _lvcreate_: creates a logical volume from partitions in each physical volume
+
+
+
+
+
+
+
+
+
+
+
 
 
 
